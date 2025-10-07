@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FLOMEL - DIY Character Bedazzling Kits</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .sparkle {
+            position: fixed;
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: sparkleFloat 3s infinite;
+            opacity: 0;
+        }
+
+        @keyframes sparkleFloat {
+            0%, 100% { opacity: 0; transform: translateY(0) scale(0); }
+            50% { opacity: 1; transform: translateY(-100px) scale(1); }
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1.5rem 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #667eea;
+        }
+
+        .hero {
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 4rem 2rem;
+            text-align: center;
+            color: white;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+            animation: fadeInUp 1s ease-out 0.2s backwards;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1.2rem 3rem;
+            background: white;
+            color: #667eea;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+            animation: fadeInUp 1s ease-out 0.4s backwards;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .franchises {
+            background: white;
+            padding: 4rem 2rem;
+        }
+
+        .franchises h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #333;
+        }
+
+        .franchise-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .franchise-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            border: 3px solid transparent;
+        }
+
+        .franchise-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .franchise-card.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .franchise-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .franchise-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .franchise-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .franchise-card.selected p {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .characters-section {
+            background: #f5f7fa;
+            padding: 4rem 2rem;
+            display: none;
+        }
+
+        .characters-section.active {
+            display: block;
+        }
+
+        .characters-section h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .back-button {
+            display: block;
+            margin: 0 auto 2rem;
+            padding: 0.8rem 2rem;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: transform 0.3s;
+        }
+
+        .back-button:hover {
+            transform: scale(1.05);
+        }
+
+        .characters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .character-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .character-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .character-emoji {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+        }
+
+        .character-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+
+
+        .character-card .description {
+            color: #666;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        .add-to-cart {
+            padding: 0.8rem 2rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: transform 0.3s;
+        }
+
+        .add-to-cart:hover {
+            transform: scale(1.05);
+        }
+
+        .features {
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+            color: white;
+        }
+
+        .features h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s;
+        }
+
+        .feature-item:hover {
+            transform: scale(1.05);
+        }
+
+        .feature-item h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        footer {
+            background: #2d3748;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .nav-links {
+                gap: 1rem;
+                font-size: 0.9rem;
+            }
+
+            .franchise-grid, .features-grid, .characters-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">✨ FLOMEL</div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#franchises">Characters</a></li>
+                <li><a href="#about">About Us</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero" id="home">
+        <h1>Bedazzle Your Favorite Heroes!</h1>
+        <p>Create stunning, sparkly designs inspired by iconic characters from Marvel, Disney, LEGO, Cartoon Network, and Harry Potter</p>
+        <a href="#franchises" class="cta-button">Get Your Kit Now</a>
+    </section>
+
+    <section class="franchises" id="franchises">
+        <h2>Choose Your Universe</h2>
+        <div class="franchise-grid">
+            <div class="franchise-card" data-franchise="marvel">
+                <div class="franchise-icon">🦸‍♂️</div>
+                <h3>Marvel</h3>
+                <p>Bring your favorite Avengers to life with dazzling rhinestones and gems</p>
+            </div>
+            <div class="franchise-card" data-franchise="disney">
+                <div class="franchise-icon">🏰</div>
+                <h3>Disney</h3>
+                <p>Add magical sparkle to princesses, heroes, and beloved characters</p>
+            </div>
+            <div class="franchise-card" data-franchise="lego">
+                <div class="franchise-icon">🧱</div>
+                <h3>LEGO</h3>
+                <p>Build and bedazzle your favorite brick characters with colorful gems</p>
+            </div>
+            <div class="franchise-card" data-franchise="cartoon">
+                <div class="franchise-icon">🎨</div>
+                <h3>Cartoon Network</h3>
+                <p>Bedazzle your favorite animated characters with vibrant crystals</p>
+            </div>
+            <div class="franchise-card" data-franchise="hp">
+                <div class="franchise-icon">⚡</div>
+                <h3>Harry Potter</h3>
+                <p>Add wizarding world magic with house colors and themed designs</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="characters-section" id="characters">
+        <button class="back-button">← Back to Franchises</button>
+        <h2 id="franchise-title"></h2>
+        <div class="characters-grid" id="characters-grid"></div>
+    </section>
+
+    <section class="features" id="about">
+        <h2>About FLOMEL</h2>
+        <div style="max-width: 800px; margin: 0 auto; text-align: center; padding: 2rem;">
+            <p style="font-size: 1.2rem; line-height: 1.8; margin-bottom: 2rem;">
+                Welcome to FLOMEL, where creativity meets fandom! We're passionate about bringing your favorite characters to life through the art of bedazzling. Our DIY kits are designed for fans of all ages who want to add a touch of sparkle to their world.
+            </p>
+            <p style="font-size: 1.2rem; line-height: 1.8; margin-bottom: 2rem;">
+                Each kit is carefully curated with premium materials, easy-to-follow templates, and everything you need to create stunning, professional-looking designs. Whether you're a Marvel enthusiast, Disney dreamer, LEGO builder, Cartoon Network fan, or Harry Potter wizard, we've got the perfect kit for you.
+            </p>
+            <p style="font-size: 1.2rem; line-height: 1.8;">
+                Join thousands of happy crafters who've discovered the joy of bedazzling their favorite heroes. Let's make something magical together! ✨
+            </p>
+        </div>
+    </section>
+
+    <section class="features" id="features" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"
+        <h2>What's In Your Kit</h2>
+        <div class="features-grid">
+            <div class="feature-item">
+                <h3>🎨 Character Templates</h3>
+                <p>Easy-to-follow templates featuring iconic silhouettes and designs from all your favorite franchises</p>
+            </div>
+            <div class="feature-item">
+                <h3>💎 Premium Rhinestones</h3>
+                <p>High-quality crystals in multiple colors and sizes to match any character's theme</p>
+            </div>
+            <div class="feature-item">
+                <h3>🔧 Professional Tools</h3>
+                <p>Precision applicator, tweezers, and adhesive for perfect placement every time</p>
+            </div>
+            <div class="feature-item">
+                <h3>📖 Step-by-Step Guide</h3>
+                <p>Detailed instructions with photos to help you create professional-looking results</p>
+            </div>
+            <div class="feature-item">
+                <h3>🎁 Bonus Stickers</h3>
+                <p>Extra themed stickers and embellishments to customize your creations</p>
+            </div>
+            <div class="feature-item">
+                <h3>♻️ Reusable Storage</h3>
+                <p>Organized storage box to keep all your supplies neat and ready for your next project</p>
+            </div>
+        </div>
+    </section>
+
+    <footer id="contact">
+        <p>&copy; 2025 FLOMEL. The Turtle's Pace, The Diamond's Grace.</p>
+        <p>Contact us: lana.alajlan@icloud.com | +966 551415636</p>
+    </footer>
+
+    <script>
+        const charactersData = {
+            marvel: [
+                { name: "Iron Man", emoji: "🤖", description: "Bedazzle the genius billionaire in red and gold" },
+                { name: "Spider-Man", emoji: "🕷️", description: "Web-slinging hero in red and blue sparkle" },
+                { name: "Captain America", emoji: "🛡️", description: "Star-spangled hero with shield design" },
+                { name: "Black Widow", emoji: "🕸️", description: "Elegant spy in black and red crystals" },
+                { name: "Thor", emoji: "⚡", description: "God of Thunder with hammer and lightning" },
+                { name: "Hulk", emoji: "💚", description: "Smashing green hero with powerful design" }
+            ],
+            disney: [
+                { name: "Elsa", emoji: "❄️", description: "Ice queen with snowflake crystals" },
+                { name: "Cinderella", emoji: "👗", description: "Princess in sparkling blue gown" },
+                { name: "Ariel", emoji: "🧜‍♀️", description: "Mermaid with ocean-themed gems" },
+                { name: "Mickey Mouse", emoji: "🐭", description: "Classic icon with red shorts and yellow shoes" },
+                { name: "Minnie Mouse", emoji: "🎀", description: "Fashionable mouse with polka dot bow" },
+                { name: "Belle", emoji: "🌹", description: "Beauty with golden yellow dress" },
+                { name: "Simba", emoji: "🦁", description: "Lion king with majestic design" },
+                { name: "Rapunzel", emoji: "🌺", description: "Princess with long golden hair" }
+            ],
+            lego: [
+                { name: "LEGO Batman", emoji: "🦇", description: "Dark knight in brick form with black crystals" },
+                { name: "LEGO Ninjago", emoji: "🥷", description: "Ninja warriors with elemental designs" },
+                { name: "LEGO Friends", emoji: "👭", description: "Friendship-themed colorful characters" },
+                { name: "LEGO City", emoji: "🚓", description: "City heroes and vehicles" },
+                { name: "LEGO Star Wars", emoji: "⭐", description: "Galaxy heroes in brick style" },
+                { name: "LEGO Marvel", emoji: "🦸", description: "Super heroes in LEGO form" }
+            ],
+            cartoon: [
+                { name: "Scooby-Doo", emoji: "🐕", description: "Mystery-solving dog in brown and green" },
+                { name: "Tom & Jerry", emoji: "🐱", description: "Classic duo in cat and mouse chase" },
+                { name: "The Powerpuff Girls", emoji: "🎀", description: "Three super heroines saving the day" },
+                { name: "Dexter", emoji: "🔬", description: "Boy genius with secret laboratory" },
+                { name: "Johnny Bravo", emoji: "💪", description: "Pompadour hero in black outfit" },
+                { name: "Ben 10", emoji: "⌚", description: "Alien hero with omnitrix design" }
+            ],
+            hp: [
+                { name: "Harry Potter", emoji: "⚡", description: "The boy who lived with lightning scar" },
+                { name: "Hermione Granger", emoji: "📚", description: "Brightest witch with wand design" },
+                { name: "Ron Weasley", emoji: "♟️", description: "Loyal friend in Gryffindor colors" },
+                { name: "Hedwig", emoji: "🦉", description: "Snowy owl messenger" },
+                { name: "Dobby", emoji: "🧦", description: "Free elf with sock design" },
+                { name: "Dumbledore", emoji: "🧙‍♂️", description: "Wise wizard with half-moon glasses" }
+            ]
+        };
+
+        // Create floating sparkles
+        function createSparkle() {
+            const sparkle = document.createElement('div');
+            sparkle.className = 'sparkle';
+            sparkle.style.left = Math.random() * window.innerWidth + 'px';
+            sparkle.style.top = window.innerHeight + 'px';
+            sparkle.style.animationDelay = Math.random() * 2 + 's';
+            document.body.appendChild(sparkle);
+            
+            setTimeout(() => sparkle.remove(), 3000);
+        }
+
+        setInterval(createSparkle, 300);
+
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Franchise selection
+        const franchiseCards = document.querySelectorAll('.franchise-card');
+        const charactersSection = document.querySelector('.characters-section');
+        const franchisesSection = document.querySelector('.franchises');
+        const franchiseTitle = document.getElementById('franchise-title');
+        const charactersGrid = document.getElementById('characters-grid');
+        const backButton = document.querySelector('.back-button');
+
+        franchiseCards.forEach(card => {
+            card.addEventListener('click', function() {
+                const franchise = this.dataset.franchise;
+                const franchiseName = this.querySelector('h3').textContent;
+                
+                // Update title
+                franchiseTitle.textContent = franchiseName + ' Characters';
+                
+                // Clear and populate characters
+                charactersGrid.innerHTML = '';
+                charactersData[franchise].forEach(char => {
+                    const charCard = document.createElement('div');
+                    charCard.className = 'character-card';
+                    charCard.innerHTML = `
+                        <div class="character-emoji">${char.emoji}</div>
+                        <h3>${char.name}</h3>
+                        <p class="description">${char.description}</p>
+                        <button class="add-to-cart">Select Kit</button>
+                    `;
+                    charactersGrid.appendChild(charCard);
+                });
+                
+                // Show characters section, hide franchises
+                franchisesSection.style.display = 'none';
+                charactersSection.classList.add('active');
+                charactersSection.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+
+        // Back button
+        backButton.addEventListener('click', function() {
+            charactersSection.classList.remove('active');
+            franchisesSection.style.display = 'block';
+            franchisesSection.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // Add to cart functionality
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('add-to-cart')) {
+                const charName = e.target.parentElement.querySelector('h3').textContent;
+                alert(`${charName} kit selected! Contact us to place your order. 🎉`);
+            }
+        });
+    </script>
+</body>
+</html>
